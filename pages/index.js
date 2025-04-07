@@ -8,12 +8,14 @@ import {
   DOLLAR_TYPE_NAMES, 
   TIME_RANGE_OPTIONS,
   DEFAULT_ACTIVE_TYPES
-} from "../config/constants";
-import Header from "../components/Header";
-import DollarCards from "../components/DollarCards";
-import HistoricalChart from "../components/HistoricalChart";
-import HelpTooltip from "../components/HelpTooltip";
-import Footer from "../components/Footer";
+} from "@/config/constants";
+import Header from "@/components/Header";
+import DollarTicker from "@/components/DollarTicker";
+import DollarCards from "@/components/DollarCards";
+import HistoricalChart from "@/components/HistoricalChart";
+import CurrencyConverter from "@/components/CurrencyConverter";
+import HelpTooltip from "@/components/HelpTooltip";
+import Footer from "@/components/Footer";
 
 export default function Home() {
   const [dollarRates, setDollarRates] = useState([])
@@ -215,6 +217,7 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
+      <DollarTicker dollarRates={dollarRates} theme={theme} />
       <Header theme={theme} toggleTheme={toggleTheme} />
 
       <main className="container mx-auto py-8 px-4">
@@ -255,6 +258,11 @@ export default function Home() {
           toggleDollarType={toggleDollarType}
           dollarTypeColors={DOLLAR_TYPE_COLORS}
           dollarTypeNames={DOLLAR_TYPE_NAMES}
+        />
+
+        <CurrencyConverter 
+          dollarTypes={dollarRates} 
+          theme={theme} 
         />
       </main>
 

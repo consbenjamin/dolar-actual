@@ -1,6 +1,6 @@
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts"
-import TimeRangeSelector from "./TimeRangeSelector"
-import ChartLegend from "./ChartLegend"
+import TimeRangeSelector from "@/components/TimeRangeSelector"
+import ChartLegend from "@/components/ChartLegend"
 
 export default function HistoricalChart({
   theme,

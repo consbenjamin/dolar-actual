@@ -1,5 +1,5 @@
-import DollarCard from "./DollarCard";
-import LoadingSkeleton from "./LoadingSkeleton";
+import DollarCard from "@/components/DollarCard";
+import LoadingSkeleton from "@/components/LoadingSkeleton";
 
 export default function DollarCards({ 
   dollarRates, 

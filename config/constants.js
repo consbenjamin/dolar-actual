@@ -20,7 +20,6 @@ export const DOLLAR_TYPE_NAMES = {
   turista: "Dólar Turista",
 }
 
-// Opcional: puedes agregar más constantes aquí
 export const TIME_RANGE_OPTIONS = [
   { value: "7d", label: "7D" },
   { value: "30d", label: "30D" },

@@ -3,7 +3,7 @@ import axios from "axios"
 // Simple in-memory cache
 let cachedData = null
 let cacheTime = 0
-const CACHE_DURATION = 1800 * 1000 // 30 minutes in milliseconds
+const CACHE_DURATION = 1800 * 1000 //30 minutes
 
 export default async function handler(req, res) {
   try {
@@ -27,7 +27,7 @@ export default async function handler(req, res) {
       return res.status(500).json({ error: "Internal Server Error" })
     }
 
-    // Format the data
+    
     const formattedData = responseData.map((dolarData) => ({
       casa: dolarData.casa,
       compra: dolarData.compra,
@@ -35,7 +35,7 @@ export default async function handler(req, res) {
       fecha: dolarData.fecha,
     }))
 
-    // Update cache
+    
     cachedData = formattedData
     cacheTime = now
 

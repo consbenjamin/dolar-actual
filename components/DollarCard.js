@@ -1,5 +1,5 @@
 import { CheckSquare, Square, ArrowUp, ArrowDown } from "lucide-react"
-import MiniChart from "./MiniChart";
+import MiniChart from "@/components/MiniChart";
 
 export default function DollarCard({
   rate,
