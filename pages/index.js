@@ -214,7 +214,7 @@ export default function Home() {
       <Head>
         <title>Cotización del Dólar en Argentina</title>
         <meta name="description" content="Cotización actualizada del dólar en Argentina" />
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href="/favicon.svg" />
       </Head>
 
       <DollarTicker dollarRates={dollarRates} theme={theme} />
