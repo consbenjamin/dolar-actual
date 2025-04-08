@@ -15,6 +15,14 @@ Características principales
 
 ✅ Indicadores de variación porcentual (↑/↓)
 
+
+*Vista principal con todas las cotizaciones*
+![Captura de pantalla 2025-04-07 215240](https://github.com/user-attachments/assets/7c54674f-ed16-4fce-9c20-8e74457ffe46)
+
+*Gráfico comparativo histórico*
+![Captura de pantalla 2025-04-07 215313](https://github.com/user-attachments/assets/20fea281-1cae-4bc1-8133-4fe036606318)
+
+
 Tecnologías utilizadas
 Frontend: Next.Js
 Charting: Recharts (para gráficos históricos)
