@@ -1,4 +1,4 @@
-
+import { Legend } from "recharts"
 
 export default function ChartLegend({ activeTypes, toggleDollarType, dollarTypeNames }) {
   return (

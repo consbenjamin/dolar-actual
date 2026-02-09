@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Head from "next/head";
 import { RefreshCw } from "lucide-react";
 import { 
@@ -17,10 +17,13 @@ import CurrencyConverter from "@/components/CurrencyConverter";
 import HelpTooltip from "@/components/HelpTooltip";
 import Footer from "@/components/Footer";
 
+const AUTO_REFRESH_MINUTES = 5
+
 export default function Home() {
   const [dollarRates, setDollarRates] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
+  const [lastUpdated, setLastUpdated] = useState(null)
   const [theme, setTheme] = useState("light")
   const [historicalData, setHistoricalData] = useState([])
   const [activeTypes, setActiveTypes] = useState(["oficial", "blue"])
@@ -28,21 +31,23 @@ export default function Home() {
   const [showHelp, setShowHelp] = useState(true)
 
   // Fetch current dollar rates
-  const fetchDollarRates = async () => {
+  const fetchDollarRates = useCallback(async () => {
     try {
       setLoading(true)
+      setError(null)
       const response = await fetch("https://dolarapi.com/v1/dolares")
       if (!response.ok) {
-        throw new Error("Failed to fetch data")
+        throw new Error("No se pudo cargar la información")
       }
       const data = await response.json()
       setDollarRates(data)
+      setLastUpdated(new Date())
       setLoading(false)
     } catch (err) {
       setError(err.message)
       setLoading(false)
     }
-  }
+  }, [])
 
   // Fetch historical dollar rates
   const fetchHistoricalData = async () => {
@@ -165,20 +170,25 @@ export default function Home() {
     let filtered = [...historicalData]
 
     switch (timeRange) {
-      case "7d":
+      case "7d": {
         const sevenDaysAgo = new Date()
         sevenDaysAgo.setDate(now.getDate() - 7)
         filtered = filtered.filter((item) => new Date(item.date) >= sevenDaysAgo)
         break
-      case "30d":
+      }
+      case "30d": {
         const thirtyDaysAgo = new Date()
         thirtyDaysAgo.setDate(now.getDate() - 30)
         filtered = filtered.filter((item) => new Date(item.date) >= thirtyDaysAgo)
         break
-      case "90d":
+      }
+      case "90d": {
         const ninetyDaysAgo = new Date()
         ninetyDaysAgo.setDate(now.getDate() - 90)
         filtered = filtered.filter((item) => new Date(item.date) >= ninetyDaysAgo)
+        break
+      }
+      case "all":
         break
     }
 
@@ -205,32 +215,52 @@ export default function Home() {
 
     fetchDollarRates()
     fetchHistoricalData()
-  }, [])
+  }, [fetchDollarRates])
+
+  // Auto-refresh cotizaciones cada N minutos
+  useEffect(() => {
+    if (!lastUpdated || error) return
+    const interval = setInterval(fetchDollarRates, AUTO_REFRESH_MINUTES * 60 * 1000)
+    return () => clearInterval(interval)
+  }, [lastUpdated, error, fetchDollarRates])
 
   return (
     <div
-      className={`min-h-screen transition-colors duration-300 ${theme === "dark" ? "bg-gray-900 text-white" : "bg-gray-100 text-gray-900"}`}
+      className={`min-h-screen transition-colors duration-300 ${theme === "dark" ? "bg-[hsl(var(--background))] text-[hsl(var(--foreground))]" : "bg-[hsl(var(--background))] text-[hsl(var(--foreground))]"}`}
     >
       <Head>
         <title>Cotización del Dólar en Argentina</title>
-        <meta name="description" content="Cotización actualizada del dólar en Argentina" />
+        <meta name="description" content="Cotización actualizada del dólar en Argentina: oficial, blue, bolsa, cripto y más." />
         <link rel="icon" href="/favicon.svg" />
       </Head>
 
       <DollarTicker dollarRates={dollarRates} theme={theme} />
       <Header theme={theme} toggleTheme={toggleTheme} />
 
-      <main className="container mx-auto py-8 px-4">
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-xl font-semibold">Cotizaciones Actuales</h2>
-          <button
-            onClick={fetchDollarRates}
-            className={`flex items-center gap-2 px-4 py-2 rounded-md ${theme === "dark" ? "bg-blue-600 hover:bg-blue-700" : "bg-blue-500 hover:bg-blue-600"} text-white transition-colors`}
-            disabled={loading}
-          >
-            <RefreshCw size={16} className={loading ? "animate-spin" : ""} />
-            Actualizar
-          </button>
+      <main className="container mx-auto py-8 px-4 max-w-7xl">
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
+          <div>
+            <h2 className="text-2xl font-bold tracking-tight">Cotizaciones actuales</h2>
+            {lastUpdated && !error && (
+              <p className={`text-sm mt-1 ${theme === "dark" ? "text-gray-400" : "text-gray-500"}`}>
+                Última actualización: {lastUpdated.toLocaleTimeString("es-AR", { hour: "2-digit", minute: "2-digit" })}
+              </p>
+            )}
+          </div>
+          <div className="flex items-center gap-2">
+            {error && (
+              <span className={`text-sm ${theme === "dark" ? "text-red-400" : "text-red-600"}`}>{error}</span>
+            )}
+            <button
+              onClick={fetchDollarRates}
+              className={`flex items-center gap-2 px-4 py-2.5 rounded-lg font-medium ${theme === "dark" ? "bg-[hsl(var(--primary))] hover:opacity-90" : "bg-[hsl(var(--primary))] hover:opacity-90"} text-white transition-all shadow-sm`}
+              disabled={loading}
+              aria-label="Actualizar cotizaciones"
+            >
+              <RefreshCw size={18} className={loading ? "animate-spin" : ""} />
+              Actualizar
+            </button>
+          </div>
         </div>
 
         <HelpTooltip theme={theme} showHelp={showHelp} setShowHelp={setShowHelp} />
@@ -239,6 +269,7 @@ export default function Home() {
           dollarRates={dollarRates}
           loading={loading}
           error={error}
+          onRetry={fetchDollarRates}
           theme={theme}
           activeTypes={activeTypes}
           toggleDollarType={toggleDollarType}

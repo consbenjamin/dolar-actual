@@ -11,14 +11,18 @@ export default function DollarCard({
   minMax,
   dollarTypeColors
 }) {
+  const accentColor = dollarTypeColors[rate.casa] || "#94a3b8"
+
   return (
     <div
-      className={`p-6 rounded-lg shadow-md ${theme === "dark" ? "bg-gray-800" : "bg-white"} transition-all duration-200 ${isSelected ? "ring-2" : "hover:shadow-lg"}`}
+      role="button"
+      tabIndex={0}
       onClick={() => toggleDollarType(rate.casa)}
+      onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && toggleDollarType(rate.casa)}
+      className={`p-6 rounded-xl border transition-all duration-200 cursor-pointer select-none ${theme === "dark" ? "bg-[hsl(var(--card))] border-gray-700" : "bg-[hsl(var(--card))] border-gray-200"} ${isSelected ? "ring-2 shadow-lg" : "hover:shadow-md hover:border-gray-300 dark:hover:border-gray-600"}`}
       style={{
-        cursor: "pointer",
-        borderLeft: isSelected ? `4px solid ${dollarTypeColors[rate.casa] || "#ccc"}` : "none",
-        ringColor: dollarTypeColors[rate.casa] || "#ccc",
+        borderLeft: `4px solid ${isSelected ? accentColor : "transparent"}`,
+        "--tw-ring-color": accentColor,
       }}
     >
       <div className="flex justify-between items-start mb-2">

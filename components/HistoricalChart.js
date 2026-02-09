@@ -24,18 +24,16 @@ export default function HistoricalChart({
   return (
     <div className="mb-8">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 gap-4">
-        <div className="flex flex-col">
-          <h2 className="text-xl font-semibold">Evolución del Dólar</h2>
-          <div className="text-sm text-gray-500 dark:text-gray-400 italic">
-            ({activeTypes.length} {activeTypes.length === 1 ? "tipo seleccionado" : "tipos seleccionados"})
-          </div>
+        <div>
+          <h2 className="text-2xl font-bold tracking-tight">Evolución del dólar</h2>
+          <p className="text-sm text-[hsl(var(--muted-foreground))] mt-1">
+            {activeTypes.length} {activeTypes.length === 1 ? "tipo seleccionado" : "tipos seleccionados"} — clic en la leyenda para filtrar
+          </p>
         </div>
-        
         <TimeRangeSelector theme={theme} timeRange={timeRange} setTimeRange={setTimeRange} />
       </div>
 
-      {/* Gráfico */}
-      <div className={`p-4 rounded-lg shadow-md ${theme === "dark" ? "bg-gray-800" : "bg-white"}`}>
+      <div className={`p-4 rounded-xl border ${theme === "dark" ? "bg-[hsl(var(--card))] border-gray-700" : "bg-[hsl(var(--card))] border-gray-200"}`}>
         <ResponsiveContainer width="100%" height={400}>
           <LineChart data={getFilteredData()} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
             <CartesianGrid strokeDasharray="3 3" stroke={theme === "dark" ? "#444" : "#eee"} />

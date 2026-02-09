@@ -6,42 +6,44 @@ export default function DollarTicker({ dollarRates, theme }) {
   const containerRef = useRef(null)
   const contentRef = useRef(null)
   const [content, setContent] = useState([])
+  const [paused, setPaused] = useState(false)
 
   useEffect(() => {
     if (dollarRates.length > 0) {
-      setContent([...dollarRates, ...dollarRates]) // duplicado para scroll infinito
+      setContent([...dollarRates, ...dollarRates])
     }
   }, [dollarRates])
 
   useEffect(() => {
+    if (paused) return
     let scrollX = 0
     let animationId
 
     const scroll = () => {
       if (!containerRef.current || !contentRef.current) return
-
-      scrollX += 0.5 // velocidad del scroll
-
-      if (scrollX >= contentRef.current.scrollWidth / 2) {
-        scrollX = 0 // reset al llegar al final
-      }
-
+      scrollX += 0.5
+      if (scrollX >= contentRef.current.scrollWidth / 2) scrollX = 0
       containerRef.current.scrollLeft = scrollX
       animationId = requestAnimationFrame(scroll)
     }
 
     animationId = requestAnimationFrame(scroll)
     return () => cancelAnimationFrame(animationId)
-  }, [content])
+  }, [content, paused])
 
   return (
     <div
-      className={`relative overflow-hidden py-3 border-y ${theme === 'dark' ? 'border-gray-700 bg-gray-800' : 'border-gray-200 bg-gray-50'}`}
+      className={`relative overflow-hidden py-3 border-y ${theme === "dark" ? "border-gray-700 bg-[hsl(var(--card))]" : "border-gray-200 bg-[hsl(var(--muted))]"}`}
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
+      onFocus={() => setPaused(true)}
+      onBlur={() => setPaused(false)}
+      title="Pausar al pasar el mouse"
     >
       <div
         className="whitespace-nowrap flex"
         ref={containerRef}
-        style={{ overflowX: 'hidden' }}
+        style={{ overflowX: "hidden" }}
       >
         <div className="flex" ref={contentRef}>
           {content.map((rate, index) => (

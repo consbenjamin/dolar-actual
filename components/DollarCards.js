@@ -5,6 +5,7 @@ export default function DollarCards({
   dollarRates, 
   loading, 
   error, 
+  onRetry,
   theme, 
   activeTypes, 
   toggleDollarType,
@@ -25,8 +26,14 @@ export default function DollarCards({
 
   if (error) {
     return (
-      <div className={`p-4 mb-6 rounded-md ${theme === "dark" ? "bg-red-900 text-red-200" : "bg-red-100 text-red-700"}`}>
-        {error}
+      <div className={`p-6 mb-6 rounded-xl border ${theme === "dark" ? "bg-red-950/30 border-red-800 text-red-200" : "bg-red-50 border-red-200 text-red-800"}`}>
+        <p className="mb-3">{error}</p>
+        <button
+          onClick={() => typeof onRetry === "function" && onRetry()}
+          className={`px-4 py-2 rounded-lg font-medium ${theme === "dark" ? "bg-red-800 hover:bg-red-700" : "bg-red-600 hover:bg-red-700"} text-white transition-colors`}
+        >
+          Reintentar
+        </button>
       </div>
     )
   }

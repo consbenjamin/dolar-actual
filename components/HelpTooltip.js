@@ -5,7 +5,7 @@ export default function HelpTooltip({ theme, showHelp, setShowHelp }) {
 
   return (
     <div
-      className={`p-4 mb-6 rounded-md flex items-start gap-3 ${theme === "dark" ? "bg-blue-900/50 text-blue-100" : "bg-blue-50 text-blue-800"} border ${theme === "dark" ? "border-blue-800" : "border-blue-200"}`}
+      className={`p-4 mb-6 rounded-xl flex items-start gap-3 border ${theme === "dark" ? "bg-blue-900/30 text-blue-100 border-blue-800" : "bg-blue-50 text-blue-800 border-blue-200"}`}
     >
       <HelpCircle className="flex-shrink-0 mt-0.5" size={18} />
       <div>
