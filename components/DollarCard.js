@@ -1,5 +1,8 @@
+"use client"
+
+import { motion } from "framer-motion"
 import { CheckSquare, Square, ArrowUp, ArrowDown } from "lucide-react"
-import MiniChart from "@/components/MiniChart";
+import MiniChart from "@/components/MiniChart"
 
 export default function DollarCard({
   rate,
@@ -9,17 +12,23 @@ export default function DollarCard({
   miniChartData,
   change,
   minMax,
-  dollarTypeColors
+  dollarTypeColors,
+  index = 0,
 }) {
   const accentColor = dollarTypeColors[rate.casa] || "#94a3b8"
 
   return (
-    <div
+    <motion.div
       role="button"
       tabIndex={0}
       onClick={() => toggleDollarType(rate.casa)}
       onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && toggleDollarType(rate.casa)}
-      className={`p-6 rounded-xl border transition-all duration-200 cursor-pointer select-none ${theme === "dark" ? "bg-[hsl(var(--card))] border-gray-700" : "bg-[hsl(var(--card))] border-gray-200"} ${isSelected ? "ring-2 shadow-lg" : "hover:shadow-md hover:border-gray-300 dark:hover:border-gray-600"}`}
+      initial={{ opacity: 0, y: 16 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.35, delay: index * 0.05 }}
+      whileHover={{ scale: 1.02, transition: { duration: 0.2 } }}
+      whileTap={{ scale: 0.98 }}
+      className={`p-6 rounded-xl border cursor-pointer select-none ${theme === "dark" ? "bg-[hsl(var(--card))] border-gray-700" : "bg-[hsl(var(--card))] border-gray-200"} ${isSelected ? "ring-2 shadow-lg" : "hover:shadow-md hover:border-gray-300 dark:hover:border-gray-600"}`}
       style={{
         borderLeft: `4px solid ${isSelected ? accentColor : "transparent"}`,
         "--tw-ring-color": accentColor,
@@ -34,10 +43,15 @@ export default function DollarCard({
           )}
           <h3 className="text-lg font-medium">{rate.nombre}</h3>
         </div>
-        <div className={`flex items-center text-sm ${change.isUp ? "text-green-500" : "text-red-500"}`}>
+        <motion.div
+          className={`flex items-center text-sm ${change.isUp ? "text-green-500" : "text-red-500"}`}
+          initial={false}
+          animate={{ scale: 1 }}
+          key={`${change.value}-${change.isUp}`}
+        >
           {change.isUp ? <ArrowUp size={14} /> : <ArrowDown size={14} />}
           <span>{change.value}%</span>
-        </div>
+        </motion.div>
       </div>
 
       <div className="flex items-end gap-4 mb-4">
@@ -53,17 +67,17 @@ export default function DollarCard({
         </div>
       </div>
 
-      <MiniChart 
-        rate={rate} 
-        theme={theme} 
-        miniChartData={miniChartData} 
-        minMax={minMax} 
-        dollarTypeColors={dollarTypeColors} 
+      <MiniChart
+        rate={rate}
+        theme={theme}
+        miniChartData={miniChartData}
+        minMax={minMax}
+        dollarTypeColors={dollarTypeColors}
       />
 
       <p className="text-xs mt-2 text-gray-500 dark:text-gray-400">
         Actualizado: {new Date(rate.fechaActualizacion).toLocaleString("es-AR")}
       </p>
-    </div>
+    </motion.div>
   )
 }

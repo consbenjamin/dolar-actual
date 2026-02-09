@@ -42,3 +42,18 @@
   --font-sans: "DM Sans", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, monospace;
 }
+
+/* Scrollbar tipo dashboard para listas de noticias */
+.news-feed-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+.news-feed-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+.news-feed-scroll::-webkit-scrollbar-thumb {
+  background: hsl(var(--muted-foreground) / 0.3);
+  border-radius: 3px;
+}
+.news-feed-scroll::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--muted-foreground) / 0.5);
+}

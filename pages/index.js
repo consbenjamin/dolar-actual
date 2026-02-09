@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import Head from "next/head";
+import { motion } from "framer-motion";
 import { RefreshCw } from "lucide-react";
 import { 
   DOLLAR_TYPE_COLORS, 
@@ -16,6 +17,8 @@ import HistoricalChart from "@/components/HistoricalChart";
 import CurrencyConverter from "@/components/CurrencyConverter";
 import HelpTooltip from "@/components/HelpTooltip";
 import Footer from "@/components/Footer";
+import NewsFeed from "@/components/NewsFeed";
+import Toast from "@/components/Toast";
 
 const AUTO_REFRESH_MINUTES = 5
 
@@ -29,6 +32,7 @@ export default function Home() {
   const [activeTypes, setActiveTypes] = useState(["oficial", "blue"])
   const [timeRange, setTimeRange] = useState("30d")
   const [showHelp, setShowHelp] = useState(true)
+  const [showToast, setShowToast] = useState(false)
 
   // Fetch current dollar rates
   const fetchDollarRates = useCallback(async () => {
@@ -43,6 +47,7 @@ export default function Home() {
       setDollarRates(data)
       setLastUpdated(new Date())
       setLoading(false)
+      setShowToast(true)
     } catch (err) {
       setError(err.message)
       setLoading(false)
@@ -237,7 +242,12 @@ export default function Home() {
       <DollarTicker dollarRates={dollarRates} theme={theme} />
       <Header theme={theme} toggleTheme={toggleTheme} />
 
-      <main className="container mx-auto py-8 px-4 max-w-7xl">
+      <motion.main
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.4 }}
+        className="container mx-auto py-6 sm:py-8 px-4 sm:px-6 max-w-7xl"
+      >
         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
           <div>
             <h2 className="text-2xl font-bold tracking-tight">Cotizaciones actuales</h2>
@@ -253,7 +263,7 @@ export default function Home() {
             )}
             <button
               onClick={fetchDollarRates}
-              className={`flex items-center gap-2 px-4 py-2.5 rounded-lg font-medium ${theme === "dark" ? "bg-[hsl(var(--primary))] hover:opacity-90" : "bg-[hsl(var(--primary))] hover:opacity-90"} text-white transition-all shadow-sm`}
+              className="flex items-center gap-2 px-4 py-2.5 rounded-lg font-medium bg-[hsl(var(--primary))] hover:opacity-90 text-white transition-all shadow-sm"
               disabled={loading}
               aria-label="Actualizar cotizaciones"
             >
@@ -279,25 +289,36 @@ export default function Home() {
           dollarTypeColors={DOLLAR_TYPE_COLORS}
         />
 
-        <HistoricalChart
-          theme={theme}
-          historicalData={historicalData}
-          getFilteredData={getFilteredData}
-          timeRange={timeRange}
-          setTimeRange={setTimeRange}
-          activeTypes={activeTypes}
-          toggleDollarType={toggleDollarType}
-          dollarTypeColors={DOLLAR_TYPE_COLORS}
-          dollarTypeNames={DOLLAR_TYPE_NAMES}
-        />
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8 items-start">
+          <div className="lg:col-span-2">
+            <HistoricalChart
+              theme={theme}
+              historicalData={historicalData}
+              getFilteredData={getFilteredData}
+              timeRange={timeRange}
+              setTimeRange={setTimeRange}
+              activeTypes={activeTypes}
+              toggleDollarType={toggleDollarType}
+              dollarTypeColors={DOLLAR_TYPE_COLORS}
+              dollarTypeNames={DOLLAR_TYPE_NAMES}
+            />
+          </div>
+          <div className="lg:col-span-1 lg:h-[520px]">
+            <NewsFeed theme={theme} />
+          </div>
+        </div>
 
-        <CurrencyConverter 
-          dollarTypes={dollarRates} 
-          theme={theme} 
-        />
-      </main>
+        <CurrencyConverter dollarTypes={dollarRates} theme={theme} />
+      </motion.main>
 
       <Footer theme={theme} />
+
+      <Toast
+        message="Datos actualizados"
+        visible={showToast}
+        onDismiss={() => setShowToast(false)}
+        theme={theme}
+      />
     </div>
   )
 }
