@@ -6,6 +6,7 @@ export const DOLLAR_TYPE_COLORS = {
   cripto: "#F44336",
   mayorista: "#00BCD4",
   solidario: "#795548",
+  tarjeta: "#E91E63",
   turista: "#607D8B",
 }
 
@@ -17,6 +18,7 @@ export const DOLLAR_TYPE_NAMES = {
   cripto: "Dólar Cripto",
   mayorista: "Dólar Mayorista",
   solidario: "Dólar Solidario",
+  tarjeta: "Dólar Tarjeta",
   turista: "Dólar Turista",
 }
 
